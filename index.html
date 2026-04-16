@@ -1,439 +1,499 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luyện Trí Nhớ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#0f0f13;
-    --surface:#1a1a22;
-    --surface2:#23232e;
-    --border:#2e2e3e;
-    --text:#f0eff5;
-    --text2:#9b9aaa;
-    --text3:#5e5d70;
-    --purple:#8b7ff0;
-    --purple-dim:#3d3768;
-    --teal:#3ec9a7;
-    --teal-dim:#1a4a3d;
-    --red:#e85d5d;
-    --red-dim:#4a2020;
-    --amber:#f0b84a;
-    --radius:10px;
-    --radius-lg:16px;
-  }
-  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;padding:1.5rem 1rem 3rem}
-  .app{max-width:680px;margin:0 auto}
-  .header{text-align:center;margin-bottom:2rem;padding-top:.5rem}
-  .header h1{font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
-  .header h1 span{color:var(--purple)}
-  .header p{font-size:14px;color:var(--text2)}
-  .tabs{display:flex;gap:6px;margin-bottom:1.5rem;background:var(--surface);padding:5px;border-radius:var(--radius);border:1px solid var(--border)}
-  .tab{flex:1;padding:8px 10px;border:none;border-radius:7px;font-size:13px;cursor:pointer;background:transparent;color:var(--text2);transition:all .2s;font-weight:500}
-  .tab.active{background:var(--purple);color:#fff}
-  .tab:hover:not(.active){background:var(--surface2);color:var(--text)}
-  .deck-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
-  .deck-btn{padding:6px 13px;border:1px solid var(--border);border-radius:20px;font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);transition:all .2s;white-space:nowrap}
-  .deck-btn.active{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
-  .deck-btn:hover:not(.active){border-color:var(--text3);color:var(--text)}
-  .progress-bar{height:3px;background:var(--surface2);border-radius:2px;margin-bottom:.75rem;overflow:hidden}
-  .progress-fill{height:100%;background:var(--purple);border-radius:2px;transition:width .4s ease}
-  .progress{font-size:12px;color:var(--text3);text-align:right;margin-bottom:1rem}
-  .card-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2.5rem 2rem;min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s,transform .15s;user-select:none;position:relative}
-  .card-area:hover{border-color:var(--purple);transform:translateY(-1px)}
-  .card-area:active{transform:translateY(0)}
-  .card-tag{position:absolute;top:14px;left:14px;font-size:11px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase}
-  .card-num{font-size:12px;color:var(--text3);margin-bottom:.75rem}
-  .card-front{font-size:20px;font-weight:600;text-align:center;line-height:1.45;color:var(--text)}
-  .card-rich{margin-top:1rem;padding:12px 16px;background:var(--teal-dim);border:1px solid var(--teal);border-radius:var(--radius);font-size:14px;color:#7ee8c8;line-height:1.6;width:100%;text-align:center}
-  .card-rich::before{content:'✦ Người giàu: ';color:var(--teal);font-weight:600;font-size:12px;display:block;margin-bottom:4px;text-align:left}
-  .card-poor{margin-top:8px;padding:12px 16px;background:var(--red-dim);border:1px solid #7a3030;border-radius:var(--radius);font-size:14px;color:#f09090;line-height:1.6;width:100%;text-align:center}
-  .card-poor::before{content:'✦ Người nghèo: ';color:var(--red);font-weight:600;font-size:12px;display:block;margin-bottom:4px;text-align:left}
-  .card-back{margin-top:1rem;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);font-size:15px;color:var(--text2);line-height:1.6;width:100%;text-align:center}
-  .flip-hint{font-size:12px;color:var(--text3);margin-top:1.25rem}
-  .nav-row{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:1rem}
-  .nav-btn{padding:9px 20px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;cursor:pointer;background:var(--surface);color:var(--text);transition:all .15s;font-weight:500}
-  .nav-btn:hover{background:var(--surface2);border-color:var(--text3)}
-  .nav-btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}
-  .nav-btn.primary:hover{background:#7a6fdc}
-  .nav-btn.sm{font-size:12px;padding:7px 14px;color:var(--text2)}
-  .quiz-q{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem 1.5rem;margin-bottom:1rem;text-align:center}
-  .quiz-q .qlabel{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.5rem}
-  .quiz-q .qtext{font-size:18px;font-weight:600;color:var(--text);line-height:1.4}
-  .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .opt-btn{padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;cursor:pointer;background:var(--surface2);color:var(--text2);text-align:left;transition:all .2s;line-height:1.4}
-  .opt-btn:hover:not(:disabled){background:var(--surface);border-color:var(--purple);color:var(--text)}
-  .opt-btn.correct{background:var(--teal-dim);border-color:var(--teal);color:#7ee8c8}
-  .opt-btn.wrong{background:var(--red-dim);border-color:var(--red);color:#f09090}
-  .result-area{text-align:center;padding:2rem 1rem}
-  .result-pct{font-size:56px;font-weight:700;margin-bottom:.25rem}
-  .result-pct.good{color:var(--teal)}
-  .result-pct.bad{color:var(--amber)}
-  .result-label{font-size:14px;color:var(--text2);margin-bottom:1.5rem}
-  .score-row{display:flex;gap:10px;justify-content:center;margin-bottom:1.5rem}
-  .score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1.25rem;text-align:center;min-width:80px}
-  .score-card .snum{font-size:22px;font-weight:700}
-  .score-card .slbl{font-size:11px;color:var(--text3);margin-top:2px}
-  .upload-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem}
-  .upload-section h3{font-size:15px;font-weight:600;margin-bottom:.5rem}
-  .upload-section p{font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6}
-  .upload-section code{background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:12px;color:var(--purple)}
-  input[type=text],textarea{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;color:var(--text);background:var(--surface2);margin-bottom:.75rem;outline:none;transition:border-color .2s}
-  input[type=text]:focus,textarea:focus{border-color:var(--purple)}
-  textarea{resize:vertical;min-height:130px}
-  .custom-list{margin-top:1.5rem}
-  .custom-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;background:var(--surface2)}
-  .custom-item span{font-size:14px;color:var(--text)}
-  .custom-item small{color:var(--text3);font-size:12px}
-  .del-btn{padding:4px 10px;border:1px solid #4a2020;border-radius:6px;font-size:12px;cursor:pointer;color:var(--red);background:transparent;transition:background .15s}
-  .del-btn:hover{background:var(--red-dim)}
-  hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+:root {
+  --bg: #f5f3ee;
+  --bg2: #ede9e1;
+  --surface: #ffffff;
+  --surface2: #f7f5f0;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1a1814;
+  --text2: #6b6760;
+  --text3: #b0ada6;
+  --accent: #c4593a;
+  --accent-bg: #fdf0ec;
+  --teal: #2d7d62;
+  --teal-bg: #edf7f3;
+  --amber: #b07a1a;
+  --card-shadow: 0 2px 16px rgba(0,0,0,0.07),0 1px 3px rgba(0,0,0,0.05);
+  --card-shadow-hover: 0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06);
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --font-d: 'Instrument Serif',Georgia,serif;
+  --font-b: 'DM Sans',system-ui,sans-serif;
+  --t: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="dark"] {
+  --bg: #111110;
+  --bg2: #1a1917;
+  --surface: #1f1e1c;
+  --surface2: #252420;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0ede6;
+  --text2: #8c8880;
+  --text3: #4a4844;
+  --accent: #e07050;
+  --accent-bg: #2a1a14;
+  --teal: #4ab88a;
+  --teal-bg: #0f2a1f;
+  --amber: #d4a040;
+  --card-shadow: 0 2px 16px rgba(0,0,0,0.4),0 1px 3px rgba(0,0,0,0.3);
+  --card-shadow-hover: 0 8px 32px rgba(0,0,0,0.5),0 2px 8px rgba(0,0,0,0.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-size:15px;line-height:1.6;min-height:100vh;transition:background var(--t),color var(--t)}
+
+.shell{max-width:660px;margin:0 auto;padding:0 1rem 4rem}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.logo-title{font-family:var(--font-d);font-size:28px;line-height:1;letter-spacing:-.3px}
+.logo-title em{color:var(--accent);font-style:italic}
+.logo-sub{font-size:12px;color:var(--text3);letter-spacing:.3px;margin-top:3px}
+.theme-btn{width:40px;height:40px;border:1px solid var(--border2);border-radius:50%;background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--card-shadow);transition:transform var(--t),box-shadow var(--t);flex-shrink:0}
+.theme-btn:hover{transform:scale(1.08);box-shadow:var(--card-shadow-hover)}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--surface2);padding:4px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:1.75rem}
+.tab{flex:1;padding:8px 10px;border:none;border-radius:9px;font-size:13px;font-family:var(--font-b);font-weight:500;cursor:pointer;background:transparent;color:var(--text2);transition:all var(--t)}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:var(--card-shadow)}
+.tab:hover:not(.active){color:var(--text)}
+
+/* DECK PILLS */
+.deck-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.deck-pill{padding:5px 14px;border:1px solid var(--border2);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:var(--surface);color:var(--text2);transition:all var(--t)}
+.deck-pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.deck-pill:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+
+/* PROGRESS */
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
+.prog-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s cubic-bezier(0.4,0,0.2,1)}
+.prog-label{font-size:12px;color:var(--text3);white-space:nowrap}
+
+/* FLASHCARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2.5rem 2rem;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--card-shadow);transition:box-shadow var(--t),transform var(--t);position:relative;overflow:hidden;user-select:none}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:0;transition:opacity var(--t)}
+.card:hover{box-shadow:var(--card-shadow-hover);transform:translateY(-2px)}
+.card:hover::before{opacity:1}
+.card:active{transform:translateY(0)}
+.card-eye{font-size:11px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);position:absolute;top:18px;left:22px}
+.card-ctr{font-size:11px;color:var(--text3);position:absolute;top:18px;right:22px}
+.card-q{font-family:var(--font-d);font-size:22px;color:var(--text);text-align:center;line-height:1.4;margin-top:.5rem}
+.card-answers{width:100%;margin-top:1.25rem;display:flex;flex-direction:column;gap:8px}
+.ans{padding:12px 16px;border-radius:var(--radius);font-size:13.5px;line-height:1.5;animation:fadeUp .25s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ans-rich{background:var(--teal-bg);border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);color:var(--teal)}
+.ans-rich strong{font-weight:600;font-size:11px;letter-spacing:.3px;display:block;margin-bottom:3px;opacity:.75}
+.ans-poor{background:var(--accent-bg);border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);color:var(--accent)}
+.ans-poor strong{font-weight:600;font-size:11px;letter-spacing:.3px;display:block;margin-bottom:3px;opacity:.75}
+.ans-plain{background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
+.card-hint{font-size:12px;color:var(--text3);margin-top:1.5rem;display:flex;align-items:center;gap:5px}
+
+/* BUTTONS */
+.nav-row{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:1rem}
+.btn{padding:9px 22px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13.5px;font-family:var(--font-b);font-weight:500;cursor:pointer;background:var(--surface);color:var(--text);transition:all var(--t)}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-sm{padding:7px 14px;font-size:12px;color:var(--text2)}
+.btn-sm:hover{color:var(--text)}
+
+/* QUIZ */
+.quiz-q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem 1.75rem;margin-bottom:1rem;box-shadow:var(--card-shadow)}
+.quiz-eye{font-size:11px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem}
+.quiz-q-text{font-family:var(--font-d);font-size:21px;color:var(--text);line-height:1.4}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{padding:12px 15px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:var(--font-b);cursor:pointer;background:var(--surface);color:var(--text2);text-align:left;line-height:1.45;transition:all var(--t)}
+.opt:hover:not(:disabled){background:var(--surface2);border-color:var(--accent);color:var(--text)}
+.opt.correct{background:var(--teal-bg);border-color:var(--teal);color:var(--teal)}
+.opt.wrong{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+
+/* RESULT */
+.result{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:3rem 2rem;text-align:center;box-shadow:var(--card-shadow);animation:fadeUp .3s ease}
+.result-pct{font-family:var(--font-d);font-size:72px;line-height:1;margin-bottom:.25rem}
+.good{color:var(--teal)}.ok{color:var(--amber)}.bad{color:var(--accent)}
+.result-msg{font-size:14px;color:var(--text2);margin-bottom:2rem}
+.score-cards{display:flex;gap:10px;justify-content:center;margin-bottom:2rem}
+.sc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1.5rem;text-align:center}
+.sc .n{font-family:var(--font-d);font-size:28px}
+.sc .l{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* UPLOAD */
+.upload-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;box-shadow:var(--card-shadow);margin-bottom:1rem}
+.upload-card h3{font-family:var(--font-d);font-size:20px;margin-bottom:.5rem}
+.upload-card p{font-size:13px;color:var(--text2);margin-bottom:1.25rem;line-height:1.6}
+code{background:var(--surface2);border:1px solid var(--border);padding:1px 7px;border-radius:5px;font-size:12px;color:var(--accent);font-family:'Courier New',monospace}
+input[type=text],textarea{width:100%;padding:10px 14px;border:1px solid var(--border2);border-radius:var(--radius);font-size:14px;font-family:var(--font-b);color:var(--text);background:var(--surface2);outline:none;transition:border-color var(--t);margin-bottom:.75rem}
+input[type=text]:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:130px;line-height:1.6}
+.custom-list{display:flex;flex-direction:column;gap:6px;margin-top:1rem}
+.custom-item{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.ci-name{font-size:14px}
+.ci-count{font-size:12px;color:var(--text3)}
+.btn-del{padding:4px 12px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:6px;font-size:12px;cursor:pointer;color:var(--accent);background:transparent;transition:background var(--t)}
+.btn-del:hover{background:var(--accent-bg)}
+
+/* KBD */
+.kbd-hint{text-align:center;font-size:11px;color:var(--text3);margin-top:1rem;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+kbd{background:var(--surface2);border:1px solid var(--border2);border-radius:4px;padding:1px 6px;font-size:11px;font-family:inherit}
+
+.tab-content{animation:fadeUp .2s ease}
+
+@media(max-width:500px){
+  .quiz-opts{grid-template-columns:1fr}
+  .card-q{font-size:19px}
+  .result-pct{font-size:56px}
+  .logo-title{font-size:22px}
+}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <h1>Luyện <span>Trí Nhớ</span></h1>
-    <p>Ôn tập chủ động với thẻ ghi nhớ và kiểm tra</p>
-  </div>
+<div class="shell">
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('flashcard')">Thẻ nhớ</button>
-    <button class="tab" onclick="switchTab('quiz')">Kiểm tra</button>
-    <button class="tab" onclick="switchTab('upload')">Tải nội dung</button>
+<header>
+  <div>
+    <div class="logo-title">Luyện <em>Trí Nhớ</em></div>
+    <div class="logo-sub">Ôn tập chủ động · 7 chủ đề kiến thức</div>
   </div>
+  <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+</header>
 
-  <!-- FLASHCARD TAB -->
-  <div id="tab-flashcard">
-    <div class="deck-selector" id="deck-selector"></div>
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-    <div class="progress" id="progress-text"></div>
-    <div class="card-area" onclick="flipCard()" id="card-area">
-      <div class="card-tag" id="card-tag">nhấn để lật</div>
-      <div class="card-num" id="card-num"></div>
-      <div class="card-front" id="card-front"></div>
-      <div id="card-back-wrap" style="display:none;width:100%">
-        <div class="card-rich" id="card-rich"></div>
-        <div class="card-poor" id="card-poor" style="display:none"></div>
-        <div class="card-back" id="card-back" style="display:none"></div>
-      </div>
-      <div class="flip-hint" id="flip-hint">nhấn để xem nội dung</div>
-    </div>
-    <div class="nav-row">
-      <button class="nav-btn" onclick="prevCard()">← Trước</button>
-      <button class="nav-btn primary" onclick="flipCard()">Lật thẻ</button>
-      <button class="nav-btn" onclick="nextCard()">Tiếp →</button>
-    </div>
-    <div class="nav-row" style="margin-top:.5rem">
-      <button class="nav-btn sm" onclick="shuffleDeck()">Xáo trộn</button>
-      <button class="nav-btn sm" onclick="resetDeck()">Về đầu</button>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('flash')">📚 Thẻ nhớ</button>
+  <button class="tab" onclick="switchTab('quiz')">✏️ Kiểm tra</button>
+  <button class="tab" onclick="switchTab('upload')">＋ Tải lên</button>
+</div>
+
+<!-- FLASHCARD -->
+<div id="tab-flash" class="tab-content">
+  <div class="deck-wrap" id="flash-decks"></div>
+  <div class="prog-row">
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-label" id="prog-label">1 / 1</div>
+  </div>
+  <div class="card" onclick="flipCard()" id="the-card">
+    <div class="card-eye" id="card-eye">nhấn để lật</div>
+    <div class="card-ctr" id="card-ctr"></div>
+    <div class="card-q" id="card-q"></div>
+    <div class="card-answers" id="card-answers" style="display:none"></div>
+    <div class="card-hint" id="card-hint">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      Nhấn để xem nội dung
     </div>
   </div>
-
-  <!-- QUIZ TAB -->
-  <div id="tab-quiz" style="display:none">
-    <div class="deck-selector" id="quiz-deck-selector"></div>
-    <div id="quiz-area">
-      <div style="text-align:center;padding:3rem;color:var(--text3)">Chọn chủ đề để bắt đầu kiểm tra</div>
-    </div>
+  <div class="nav-row">
+    <button class="btn" onclick="prevCard()">← Trước</button>
+    <button class="btn btn-primary" onclick="flipCard()">Lật thẻ</button>
+    <button class="btn" onclick="nextCard()">Tiếp →</button>
   </div>
-
-  <!-- UPLOAD TAB -->
-  <div id="tab-upload" style="display:none">
-    <div class="upload-section">
-      <h3>Thêm bộ thẻ mới</h3>
-      <p>Mỗi thẻ một dòng, dùng dấu <code>|</code> để phân tách mặt trước và mặt sau.<br>
-      Ví dụ: <code>Câu hỏi | Câu trả lời</code></p>
-      <input type="text" id="deck-name-input" placeholder="Tên bộ thẻ (vd: 5 nguyên tắc vàng)">
-      <textarea id="upload-text" placeholder="Tư duy 1 | Tôi tạo ra cuộc sống của tôi&#10;Tư duy 2 | Chơi để thắng, không phải để không thua&#10;..."></textarea>
-      <button class="nav-btn primary" onclick="addCustomDeck()" style="width:100%">Thêm bộ thẻ</button>
-    </div>
-    <div class="custom-list" id="custom-decks-list"></div>
+  <div class="nav-row" style="margin-top:.5rem">
+    <button class="btn btn-sm" onclick="shuffleDeck()">⇌ Xáo trộn</button>
+    <button class="btn btn-sm" onclick="resetDeck()">↺ Về đầu</button>
+  </div>
+  <div class="kbd-hint">
+    <span><kbd>Space</kbd> lật thẻ</span>
+    <span><kbd>←</kbd> <kbd>→</kbd> điều hướng</span>
   </div>
 </div>
 
+<!-- QUIZ -->
+<div id="tab-quiz" class="tab-content" style="display:none">
+  <div class="deck-wrap" id="quiz-decks"></div>
+  <div id="quiz-body">
+    <div style="text-align:center;padding:3rem;color:var(--text3);font-style:italic;font-family:var(--font-d);font-size:18px">Chọn chủ đề bên trên để bắt đầu</div>
+  </div>
+</div>
+
+<!-- UPLOAD -->
+<div id="tab-upload" class="tab-content" style="display:none">
+  <div class="upload-card">
+    <h3>Thêm bộ thẻ riêng</h3>
+    <p>Mỗi thẻ một dòng, dùng dấu <code>|</code> để phân tách mặt trước và mặt sau.<br>
+    Ví dụ: <code>Câu hỏi | Câu trả lời đầy đủ</code></p>
+    <input type="text" id="deck-name" placeholder="Tên bộ thẻ…">
+    <textarea id="deck-content" placeholder="Tư duy 1 | Tôi tạo ra cuộc sống của tôi&#10;Tư duy 2 | Chơi để thắng, không phải để không thua"></textarea>
+    <button class="btn btn-primary" onclick="addDeck()" style="width:100%">Thêm bộ thẻ</button>
+  </div>
+  <div class="custom-list" id="custom-list"></div>
+</div>
+
+</div>
+
 <script>
-const BUILT_IN = [
-  {
-    id:'habit', label:'17 Tư duy triệu phú', hasDual:true,
-    cards:[
-      {f:'Tư duy 1: Ai tạo ra cuộc sống?', r:'Người giàu tin: "Tôi tạo ra cuộc sống của tôi" — chủ động, chịu trách nhiệm hoàn toàn', p:'Người nghèo tin: "Cuộc sống toàn là những sự việc bất ngờ xảy đến với tôi" — bị động, đổ lỗi'},
-      {f:'Tư duy 2: Mục đích chơi tiền bạc', r:'Người giàu tham gia cuộc chơi tiền bạc để chiến thắng — mục tiêu dư dả, tự do tài chính', p:'Người nghèo tham gia để không bị thua — chỉ muốn đủ sống, sợ mất'},
-      {f:'Tư duy 3: Cam kết làm giàu', r:'Người giàu quyết tâm trở nên giàu có — học, hành động, không bao giờ từ bỏ', p:'Người nghèo chỉ muốn giàu — ước mơ mơ hồ, không có cam kết thực sự'},
-      {f:'Tư duy 4: Cỡ suy nghĩ', r:'Người giàu suy nghĩ lớn — phục vụ hàng ngàn người, tạo giá trị lớn', p:'Người nghèo suy nghĩ nhỏ — tự thu hẹp, ngại lộ diện, không dám tưởng tượng lớn'},
-      {f:'Tư duy 5: Nhìn vào điều gì?', r:'Người giàu tập trung vào cơ hội — thấy tiềm năng trong mọi tình huống', p:'Người nghèo tập trung vào khó khăn — thấy rủi ro và trở ngại ở khắp nơi'},
-      {f:'Tư duy 6: Thái độ với người thành công', r:'Người giàu ngưỡng mộ người giàu có — học hỏi, lấy cảm hứng từ họ', p:'Người nghèo bực tức và ghen tị với người thành công — "Họ chắc làm bậy gì đó"'},
-      {f:'Tư duy 7: Chọn bạn mà chơi', r:'Người giàu chơi với người tích cực, thành công — môi trường nâng tầm tư duy', p:'Người nghèo giao du với người tiêu cực hoặc thất bại — kéo nhau xuống'},
-      {f:'Tư duy 8: Quảng bá bản thân', r:'Người giàu tôn vinh giá trị bản thân — sẵn sàng bán hàng, marketing cho mình', p:'Người nghèo nghĩ tiêu cực về bán hàng và quảng bá — xấu hổ, tự ti'},
-      {f:'Tư duy 9: Đứng trước vấn đề', r:'Người giàu đứng cao hơn vấn đề — chủ động giải quyết, không để bị đè bẹp', p:'Người nghèo nhỏ bé hơn vấn đề của họ — sợ hãi, trốn tránh, than vãn'},
-      {f:'Tư duy 10: Khả năng đón nhận', r:'Người giàu biết đón nhận — nhận tiền, lời khen, cơ hội một cách tự nhiên', p:'Người nghèo không biết đón nhận — từ chối, cảm thấy không xứng đáng'},
-      {f:'Tư duy 11: Cách được trả công', r:'Người giàu muốn được trả theo kết quả — hoa hồng, lợi nhuận, giá trị tạo ra', p:'Người nghèo muốn trả theo thời gian — lương cố định, an toàn là trên hết'},
-      {f:'Tư duy 12: Tư duy "Cả hai"', r:'Người giàu nghĩ "Tôi có thể có cả hai" — không đánh đổi, tư duy dồi dào', p:'Người nghèo nghĩ "cái này hoặc cái kia" — tư duy khan hiếm'},
-      {f:'Tư duy 13: Tập trung vào tài sản ròng', r:'Người giàu tập trung vào tài sản ròng — đất đai, cổ phần, công ty, đầu tư', p:'Người nghèo tập trung vào thu nhập hàng tháng — chỉ nghĩ đến lương'},
-      {f:'Tư duy 14: Quản lý tiền bạc', r:'Người giàu quản lý tiền tốt — phân bổ có kế hoạch, bắt tiền làm việc cho mình', p:'Người nghèo không quản lý tiền — sống hết tháng lại hết tiền'},
-      {f:'Tư duy 15: Sẵn sàng học và phát triển', r:'Người giàu liên tục học hỏi — đọc sách, mentor, khóa học, không ngừng phát triển', p:'Người nghèo nghĩ đã biết đủ rồi — không chịu học thêm, tư duy cố định'},
-      {f:'Tư duy 16: Hành động dù sợ hãi', r:'Người giàu hành động dù sợ hãi — can đảm không phải không sợ, mà làm dù sợ', p:'Người nghèo để nỗi sợ ngăn họ — chờ sẵn sàng, chờ mãi không bao giờ làm'},
-      {f:'Tư duy 17: Học từ người giỏi hơn', r:'Người giàu liên tục học từ người thành công hơn — mentor, cộng đồng chất lượng', p:'Người nghèo nghĩ họ đã biết hết rồi — tự mãn, không chịu nghe lời khuyên'},
-    ]
-  },
-  {
-    id:'secret', label:'10 Tờ kinh Bí Mật',
-    cards:[
-      {f:'Tờ kinh 1: Luật hấp dẫn', b:'Suy nghĩ tích cực thu hút thực tại tích cực. Tư duy bạn phát ra sẽ kéo về những gì tương đồng'},
-      {f:'Tờ kinh 2: Yêu cầu', b:'Xác định rõ điều bạn muốn và gửi yêu cầu vào vũ trụ bằng niềm tin tuyệt đối'},
-      {f:'Tờ kinh 3: Tin tưởng', b:'Hành động và suy nghĩ như thể điều bạn muốn đã xảy ra — tin trước khi thấy'},
-      {f:'Tờ kinh 4: Nhận lãnh', b:'Mở lòng đón nhận, cảm thấy tốt về điều sắp đến. Cảm xúc vui vẻ là tín hiệu thu hút đúng hướng'},
-      {f:'Tờ kinh 5: Lòng biết ơn', b:'Cảm ơn mọi thứ đang có — biết ơn nâng tần số rung động và thu hút thêm điều tốt đẹp'},
-      {f:'Tờ kinh 6: Hình dung', b:'Dùng trí tưởng tượng tạo hình ảnh sống động về cuộc sống mong muốn, cảm nhận như thật'},
-      {f:'Tờ kinh 7: Sức mạnh hiện tại', b:'Tập trung vào khoảnh khắc này — không lo lắng tương lai, không hối tiếc quá khứ'},
-      {f:'Tờ kinh 8: Tình yêu thương', b:'Tình yêu là năng lượng cao nhất. Yêu thương bản thân và người khác kéo về điều tốt đẹp'},
-      {f:'Tờ kinh 9: Sức khỏe', b:'Cơ thể phản chiếu tâm trí — suy nghĩ lành mạnh, tập trung vào sức khỏe thay vì bệnh tật'},
-      {f:'Tờ kinh 10: Sự giàu có', b:'Tiền là năng lượng trung lập. Tập trung vào sung túc, tránh tư duy khan hiếm'},
-    ]
-  },
-  {
-    id:'canvas', label:'9 Ô Canvas',
-    cards:[
-      {f:'1. Phân khúc khách hàng', b:'Ai là người bạn phục vụ? Xác định rõ nhóm khách hàng mục tiêu và nhu cầu của họ'},
-      {f:'2. Đề xuất giá trị', b:'Bạn giải quyết vấn đề gì? Tạo ra giá trị gì khiến khách hàng chọn bạn thay vì đối thủ?'},
-      {f:'3. Kênh phân phối', b:'Làm thế nào khách hàng tiếp cận sản phẩm/dịch vụ? Online, offline, đại lý, trực tiếp...'},
-      {f:'4. Quan hệ khách hàng', b:'Loại quan hệ nào bạn xây dựng? Tự phục vụ, cộng đồng, hỗ trợ cá nhân?'},
-      {f:'5. Dòng doanh thu', b:'Khách hàng trả tiền cho điều gì? Bán hàng 1 lần, thuê bao, phí dịch vụ, quảng cáo...'},
-      {f:'6. Nguồn lực chính', b:'Cần tài nguyên nào? Con người, công nghệ, hạ tầng, tài chính, sở hữu trí tuệ'},
-      {f:'7. Hoạt động chính', b:'Những hoạt động then chốt nào tạo ra đề xuất giá trị? Sản xuất, giải quyết vấn đề, nền tảng?'},
-      {f:'8. Đối tác chính', b:'Ai là đối tác/nhà cung cấp quan trọng? Mối quan hệ nào giúp mô hình vận hành?'},
-      {f:'9. Cơ cấu chi phí', b:'Chi phí quan trọng nhất là gì? Định hướng chi phí hay định hướng giá trị?'},
-    ]
-  },
-  {
-    id:'value', label:'6 Ô thiết kế giá trị',
-    cards:[
-      {f:'KH: Công việc (Jobs)', b:'Khách hàng đang cố gắng hoàn thành điều gì? Công việc chức năng, cảm xúc và xã hội'},
-      {f:'KH: Nỗi đau (Pains)', b:'Điều gì khiến khách hàng khó chịu, lo lắng, tốn kém khi hoàn thành công việc?'},
-      {f:'KH: Lợi ích (Gains)', b:'Kết quả và lợi ích khách hàng mong muốn, kể cả điều họ chưa kỳ vọng'},
-      {f:'SP: Sản phẩm/Dịch vụ', b:'Danh sách những gì bạn cung cấp giúp khách hàng hoàn thành công việc của họ'},
-      {f:'SP: Giảm đau (Pain relievers)', b:'Sản phẩm/dịch vụ giải quyết nỗi đau cụ thể nào của khách hàng?'},
-      {f:'SP: Tạo lợi ích (Gain creators)', b:'Sản phẩm/dịch vụ tạo ra lợi ích gì mà khách hàng mong đợi hoặc bất ngờ?'},
-    ]
-  },
-  {
-    id:'wheel', label:'8 Mảnh bánh xe cuộc đời',
-    cards:[
-      {f:'1. Sức khỏe', b:'Thể chất, năng lượng, thói quen ăn uống, tập luyện — nền tảng của mọi mảnh ghép còn lại'},
-      {f:'2. Gia đình & Quan hệ', b:'Chất lượng các mối quan hệ thân thiết: vợ/chồng, con cái, cha mẹ, bạn bè thân'},
-      {f:'3. Tài chính', b:'Thu nhập, tiết kiệm, đầu tư, tự do tài chính và cảm giác an toàn về tiền bạc'},
-      {f:'4. Sự nghiệp & Công việc', b:'Mức độ thỏa mãn, phát triển, đóng góp và ý nghĩa trong công việc hằng ngày'},
-      {f:'5. Phát triển cá nhân', b:'Học tập, đọc sách, kỹ năng mới, tư duy — đang phát triển thành phiên bản tốt hơn?'},
-      {f:'6. Vui chơi & Giải trí', b:'Thời gian cho sở thích, nghỉ ngơi, du lịch, những điều mang lại niềm vui thuần túy'},
-      {f:'7. Đóng góp xã hội', b:'Cho đi, tình nguyện, tạo tác động tích cực cho cộng đồng xung quanh'},
-      {f:'8. Tâm linh & Ý nghĩa', b:'Kết nối với mục đích sống, giá trị cốt lõi, niềm tin và điều gì đó lớn hơn bản thân'},
-    ]
-  },
-  {
-    id:'feynman', label:'4 Bước Feynman',
-    cards:[
-      {f:'Bước 1: Chọn chủ đề', b:'Xác định khái niệm muốn học. Viết tên lên giấy, chuẩn bị giải thích nó từ đầu'},
-      {f:'Bước 2: Dạy lại cho trẻ em', b:'Giải thích bằng ngôn ngữ đơn giản nhất, như dạy đứa trẻ 12 tuổi. Không dùng thuật ngữ'},
-      {f:'Bước 3: Xác định lỗ hổng', b:'Chỗ nào không giải thích được hoặc dùng thuật ngữ phức tạp — đó là chỗ chưa hiểu'},
-      {f:'Bước 4: Đơn giản hóa & Lặp lại', b:'Quay lại nguồn, học kỹ phần thiếu, rồi giải thích lại đơn giản hơn. Lặp đến khi trôi chảy'},
-    ]
-  },
-  {
-    id:'memory3', label:'3 Bước ghi nhớ',
-    cards:[
-      {f:'Bước 1: Chia nhỏ', b:'Phân tách thông tin thành các mảnh nhỏ, có cấu trúc rõ ràng. Não dễ xử lý từng phần'},
-      {f:'Bước 2: Gán hình ảnh', b:'Biến mỗi khái niệm thành hình ảnh sống động, kỳ lạ, màu sắc. Não nhớ hình ảnh tốt hơn chữ'},
-      {f:'Bước 3: Kể chuyện', b:'Nối các hình ảnh thành câu chuyện có trình tự. Cốt truyện tạo móc nối nhớ theo chuỗi'},
-    ]
-  },
+const BUILT_IN=[
+  {id:'habit',label:'17 Tư duy triệu phú',dual:true,cards:[
+    {f:'Tư duy 1 — Ai tạo ra cuộc sống?',r:'Người giàu tin: "Tôi tạo ra cuộc sống của tôi" — chủ động, chịu trách nhiệm hoàn toàn',p:'Người nghèo tin: "Cuộc sống toàn là những việc bất ngờ xảy đến với tôi" — bị động, đổ lỗi'},
+    {f:'Tư duy 2 — Mục đích chơi tiền bạc',r:'Người giàu tham gia để chiến thắng — mục tiêu tự do tài chính, dư dả',p:'Người nghèo tham gia để không bị thua — chỉ muốn đủ sống, sợ mất'},
+    {f:'Tư duy 3 — Cam kết làm giàu',r:'Người giàu quyết tâm trở nên giàu — học, hành động, không từ bỏ',p:'Người nghèo chỉ muốn giàu — ước mơ mơ hồ, không có cam kết thực sự'},
+    {f:'Tư duy 4 — Cỡ suy nghĩ',r:'Người giàu suy nghĩ lớn — phục vụ nhiều người, tạo giá trị lớn cho xã hội',p:'Người nghèo suy nghĩ nhỏ — tự thu hẹp, ngại lộ diện, không dám nghĩ lớn'},
+    {f:'Tư duy 5 — Nhìn vào điều gì?',r:'Người giàu tập trung vào cơ hội — thấy tiềm năng trong mọi tình huống',p:'Người nghèo tập trung vào khó khăn — thấy rủi ro và trở ngại ở khắp nơi'},
+    {f:'Tư duy 6 — Thái độ với người thành công',r:'Người giàu ngưỡng mộ người giàu — học hỏi, lấy cảm hứng từ họ',p:'Người nghèo bực tức và ghen tị — "Họ chắc làm bậy gì đó"'},
+    {f:'Tư duy 7 — Chọn bạn mà chơi',r:'Người giàu chơi với người tích cực, thành công — môi trường nâng tầm tư duy',p:'Người nghèo giao du với người tiêu cực, thất bại — kéo nhau xuống'},
+    {f:'Tư duy 8 — Quảng bá bản thân',r:'Người giàu tôn vinh giá trị bản thân — sẵn sàng bán hàng, marketing',p:'Người nghèo nghĩ tiêu cực về bán hàng — xấu hổ, tự ti'},
+    {f:'Tư duy 9 — Đứng trước vấn đề',r:'Người giàu đứng cao hơn vấn đề — chủ động giải quyết, không để bị đè bẹp',p:'Người nghèo nhỏ bé hơn vấn đề — sợ hãi, trốn tránh, than vãn'},
+    {f:'Tư duy 10 — Khả năng đón nhận',r:'Người giàu biết đón nhận — nhận tiền, lời khen, cơ hội một cách tự nhiên',p:'Người nghèo không biết đón nhận — từ chối, cảm thấy không xứng đáng'},
+    {f:'Tư duy 11 — Cách được trả công',r:'Người giàu muốn trả theo kết quả — hoa hồng, lợi nhuận, giá trị tạo ra',p:'Người nghèo muốn trả theo thời gian — lương cố định, an toàn là trên hết'},
+    {f:'Tư duy 12 — "Cả hai" hay "hoặc"?',r:'Người giàu nghĩ "Tôi có thể có cả hai" — tư duy dồi dào, không đánh đổi',p:'Người nghèo nghĩ "cái này hoặc cái kia" — tư duy khan hiếm'},
+    {f:'Tư duy 13 — Tập trung vào gì?',r:'Người giàu tập trung vào tài sản ròng — đất đai, cổ phần, công ty, đầu tư',p:'Người nghèo tập trung vào thu nhập tháng — chỉ nghĩ đến lương'},
+    {f:'Tư duy 14 — Quản lý tiền bạc',r:'Người giàu quản lý tiền tốt — phân bổ có kế hoạch, bắt tiền làm việc',p:'Người nghèo không quản lý tiền — sống hết tháng lại hết tiền'},
+    {f:'Tư duy 15 — Học hỏi & phát triển',r:'Người giàu liên tục học — đọc sách, mentor, khóa học, không ngừng lớn',p:'Người nghèo nghĩ đã biết đủ — không học thêm, tư duy cố định'},
+    {f:'Tư duy 16 — Hành động dù sợ',r:'Người giàu làm dù sợ hãi — can đảm không phải không sợ, mà làm dù sợ',p:'Người nghèo để nỗi sợ ngăn họ — chờ sẵn sàng rồi mãi không làm'},
+    {f:'Tư duy 17 — Học từ người giỏi hơn',r:'Người giàu học từ người thành công hơn — mentor, cộng đồng chất lượng',p:'Người nghèo nghĩ đã biết hết — tự mãn, không chịu nghe lời khuyên'},
+  ]},
+  {id:'secret',label:'10 Tờ kinh Bí Mật',cards:[
+    {f:'Tờ kinh 1 — Luật hấp dẫn',b:'Suy nghĩ tích cực thu hút thực tại tích cực. Tư duy bạn phát ra kéo về những gì tương đồng'},
+    {f:'Tờ kinh 2 — Yêu cầu',b:'Xác định rõ điều bạn muốn và gửi yêu cầu vào vũ trụ bằng niềm tin tuyệt đối'},
+    {f:'Tờ kinh 3 — Tin tưởng',b:'Hành động như thể điều bạn muốn đã xảy ra — tin trước khi thấy'},
+    {f:'Tờ kinh 4 — Nhận lãnh',b:'Mở lòng đón nhận, cảm thấy tốt về điều sắp đến. Cảm xúc vui vẻ là tín hiệu thu hút đúng'},
+    {f:'Tờ kinh 5 — Lòng biết ơn',b:'Cảm ơn mọi thứ đang có — biết ơn nâng tần số và thu hút thêm điều tốt đẹp'},
+    {f:'Tờ kinh 6 — Hình dung',b:'Tạo hình ảnh sống động về cuộc sống mong muốn bằng trí tưởng tượng, cảm nhận như thật'},
+    {f:'Tờ kinh 7 — Sức mạnh hiện tại',b:'Tập trung vào khoảnh khắc này — không lo tương lai, không hối tiếc quá khứ'},
+    {f:'Tờ kinh 8 — Tình yêu thương',b:'Tình yêu là năng lượng cao nhất. Yêu thương bản thân và người khác kéo về mọi điều tốt'},
+    {f:'Tờ kinh 9 — Sức khỏe',b:'Cơ thể phản chiếu tâm trí — suy nghĩ lành mạnh, tập trung vào sức khỏe thay vì bệnh tật'},
+    {f:'Tờ kinh 10 — Sự giàu có',b:'Tiền là năng lượng trung lập. Tập trung vào sung túc, tránh tư duy khan hiếm'},
+  ]},
+  {id:'canvas',label:'9 Ô Canvas',cards:[
+    {f:'1 — Phân khúc khách hàng',b:'Ai là người bạn phục vụ? Xác định rõ nhóm khách hàng mục tiêu và nhu cầu của họ'},
+    {f:'2 — Đề xuất giá trị',b:'Bạn giải quyết vấn đề gì? Tạo ra giá trị gì khiến khách hàng chọn bạn thay vì đối thủ?'},
+    {f:'3 — Kênh phân phối',b:'Làm thế nào khách hàng tiếp cận sản phẩm? Online, offline, đại lý, bán trực tiếp...'},
+    {f:'4 — Quan hệ khách hàng',b:'Loại quan hệ nào bạn xây dựng? Tự phục vụ, cộng đồng, hỗ trợ cá nhân?'},
+    {f:'5 — Dòng doanh thu',b:'Khách hàng trả tiền cho điều gì? Bán 1 lần, thuê bao, phí dịch vụ, quảng cáo...'},
+    {f:'6 — Nguồn lực chính',b:'Cần tài nguyên nào? Con người, công nghệ, hạ tầng, tài chính, sở hữu trí tuệ'},
+    {f:'7 — Hoạt động chính',b:'Hoạt động then chốt nào tạo ra giá trị? Sản xuất, giải quyết vấn đề, nền tảng?'},
+    {f:'8 — Đối tác chính',b:'Ai là đối tác/nhà cung cấp quan trọng? Mối quan hệ nào giúp mô hình vận hành?'},
+    {f:'9 — Cơ cấu chi phí',b:'Chi phí quan trọng nhất là gì? Định hướng chi phí hay định hướng giá trị?'},
+  ]},
+  {id:'value',label:'6 Ô thiết kế giá trị',cards:[
+    {f:'KH — Công việc (Jobs)',b:'Khách hàng đang cố gắng hoàn thành điều gì? Công việc chức năng, cảm xúc và xã hội'},
+    {f:'KH — Nỗi đau (Pains)',b:'Điều gì khiến khách hàng khó chịu, lo lắng, tốn kém khi hoàn thành công việc?'},
+    {f:'KH — Lợi ích (Gains)',b:'Kết quả và lợi ích khách hàng mong muốn, kể cả điều họ chưa kỳ vọng'},
+    {f:'SP — Sản phẩm / Dịch vụ',b:'Danh sách những gì bạn cung cấp giúp khách hàng hoàn thành công việc của họ'},
+    {f:'SP — Giảm đau (Pain relievers)',b:'Sản phẩm/dịch vụ giải quyết nỗi đau cụ thể nào của khách hàng?'},
+    {f:'SP — Tạo lợi ích (Gain creators)',b:'Sản phẩm/dịch vụ tạo ra lợi ích gì mà khách hàng mong đợi hoặc bất ngờ?'},
+  ]},
+  {id:'wheel',label:'8 Mảnh bánh xe cuộc đời',cards:[
+    {f:'1 — Sức khỏe',b:'Thể chất, năng lượng, thói quen ăn uống, tập luyện — nền tảng của mọi mảnh ghép khác'},
+    {f:'2 — Gia đình & Quan hệ',b:'Chất lượng các mối quan hệ thân thiết: vợ/chồng, con cái, cha mẹ, bạn bè thân'},
+    {f:'3 — Tài chính',b:'Thu nhập, tiết kiệm, đầu tư, tự do tài chính và cảm giác an toàn về tiền bạc'},
+    {f:'4 — Sự nghiệp & Công việc',b:'Mức độ thỏa mãn, phát triển, đóng góp và ý nghĩa trong công việc hàng ngày'},
+    {f:'5 — Phát triển cá nhân',b:'Học tập, đọc sách, kỹ năng mới, tư duy — phiên bản tốt hơn mỗi ngày'},
+    {f:'6 — Vui chơi & Giải trí',b:'Thời gian cho sở thích, nghỉ ngơi, du lịch, những điều mang lại niềm vui thuần túy'},
+    {f:'7 — Đóng góp xã hội',b:'Cho đi, tình nguyện, tạo tác động tích cực cho cộng đồng xung quanh'},
+    {f:'8 — Tâm linh & Ý nghĩa',b:'Kết nối với mục đích sống, giá trị cốt lõi, niềm tin và điều gì lớn hơn bản thân'},
+  ]},
+  {id:'feynman',label:'4 Bước Feynman',cards:[
+    {f:'Bước 1 — Chọn chủ đề',b:'Xác định khái niệm muốn học. Viết tên lên giấy, chuẩn bị giải thích từ đầu'},
+    {f:'Bước 2 — Dạy lại cho trẻ em',b:'Giải thích bằng ngôn ngữ đơn giản nhất — như dạy đứa trẻ 12 tuổi. Không dùng thuật ngữ'},
+    {f:'Bước 3 — Xác định lỗ hổng',b:'Chỗ nào không giải thích được hoặc phải dùng thuật ngữ phức tạp — đó là chỗ chưa hiểu'},
+    {f:'Bước 4 — Đơn giản hóa & Lặp lại',b:'Quay lại nguồn, học kỹ phần thiếu, giải thích lại đơn giản hơn. Lặp đến khi trôi chảy'},
+  ]},
+  {id:'mem3',label:'3 Bước ghi nhớ',cards:[
+    {f:'Bước 1 — Chia nhỏ',b:'Phân tách thông tin thành từng mảnh nhỏ, có cấu trúc rõ ràng. Não dễ xử lý từng phần'},
+    {f:'Bước 2 — Gán hình ảnh',b:'Biến mỗi khái niệm thành hình ảnh sống động, kỳ lạ, màu sắc. Não nhớ hình ảnh tốt hơn chữ'},
+    {f:'Bước 3 — Kể chuyện',b:'Nối các hình ảnh thành câu chuyện có trình tự. Cốt truyện tạo móc nối nhớ theo chuỗi'},
+  ]},
 ];
 
-let customDecks = [];
-try { customDecks = JSON.parse(localStorage.getItem('memoryCustomDecks') || '[]') || []; } catch(e) {}
-let allDecks = [...BUILT_IN, ...customDecks];
-let currentDeckId = BUILT_IN[0].id;
-let currentIndex = 0;
-let flipped = false;
-let deckOrder = [];
-let quizState = null;
-let quizScore = { correct: 0, wrong: 0 };
+let custom=[];
+try{custom=JSON.parse(localStorage.getItem('ghinho_decks')||'[]')||[];}catch(e){}
+const all=()=>[...BUILT_IN,...custom];
+let curId=BUILT_IN[0].id,curIdx=0,flipped=false,order=[];
+let qState=null,qScore={c:0,w:0};
+let dark=localStorage.getItem('ghinho_theme')==='dark';
 
-function getDeck(id) { return allDecks.find(d => d.id === id); }
+function applyTheme(){
+  document.documentElement.dataset.theme=dark?'dark':'light';
+  document.getElementById('theme-btn').textContent=dark?'☀️':'🌙';
+}
+function toggleTheme(){dark=!dark;localStorage.setItem('ghinho_theme',dark?'dark':'light');applyTheme();}
+applyTheme();
 
-function renderDeckBtns(containerId, onClick) {
-  document.getElementById(containerId).innerHTML =
-    allDecks.map(d => `<button class="deck-btn${d.id === currentDeckId ? ' active' : ''}" onclick="${onClick}('${d.id}')">${d.label}</button>`).join('');
+function getDeck(id){return all().find(d=>d.id===id);}
+function escQ(s){return s.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+function getAns(deck,card){return deck.dual?card.r:card.b;}
+
+function renderPills(cid,fn){
+  document.getElementById(cid).innerHTML=all().map(d=>
+    `<button class="deck-pill${d.id===curId?' active':''}" onclick="${fn}('${d.id}')">${d.label}</button>`
+  ).join('');
 }
 
-function switchFlashDeck(id) {
-  currentDeckId = id; currentIndex = 0; flipped = false;
-  deckOrder = getDeck(id).cards.map((_, i) => i);
-  renderDeckBtns('deck-selector', 'switchFlashDeck');
-  renderDeckBtns('quiz-deck-selector', 'switchQuizDeck');
+function switchTab(tab){
+  ['flash','quiz','upload'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['flash','quiz','upload'][i]===tab));
+}
+
+function switchFlashDeck(id){
+  curId=id;curIdx=0;flipped=false;
+  order=getDeck(id).cards.map((_,i)=>i);
+  renderPills('flash-decks','switchFlashDeck');
+  renderPills('quiz-decks','switchQuizDeck');
   renderCard();
 }
 
-function renderCard() {
-  const deck = getDeck(currentDeckId);
-  const card = deck.cards[deckOrder[currentIndex]];
-  const total = deck.cards.length;
-  document.getElementById('card-num').textContent = `${currentIndex + 1} / ${total}`;
-  document.getElementById('card-front').textContent = card.f;
-  const bw = document.getElementById('card-back-wrap');
-  const richEl = document.getElementById('card-rich');
-  const poorEl = document.getElementById('card-poor');
-  const backEl = document.getElementById('card-back');
-  const hint = document.getElementById('flip-hint');
-  const tag = document.getElementById('card-tag');
-  if (flipped) {
-    if (deck.hasDual) {
-      richEl.textContent = card.r; richEl.style.display = '';
-      poorEl.textContent = card.p; poorEl.style.display = '';
-      backEl.style.display = 'none';
-    } else {
-      richEl.style.display = 'none'; poorEl.style.display = 'none';
-      backEl.textContent = card.b; backEl.style.display = '';
+function renderCard(){
+  const deck=getDeck(curId);
+  const card=deck.cards[order[curIdx]];
+  const total=deck.cards.length;
+  document.getElementById('card-q').textContent=card.f;
+  document.getElementById('card-ctr').textContent=`${curIdx+1} / ${total}`;
+  const ae=document.getElementById('card-answers');
+  const he=document.getElementById('card-hint');
+  const ee=document.getElementById('card-eye');
+  if(flipped){
+    let html='';
+    if(deck.dual){
+      html=`<div class="ans ans-rich"><strong>✦ Người giàu</strong>${card.r}</div>
+            <div class="ans ans-poor" style="animation-delay:.08s"><strong>✦ Người nghèo</strong>${card.p}</div>`;
+    }else{
+      html=`<div class="ans ans-plain">${card.b}</div>`;
     }
-    bw.style.display = ''; hint.textContent = 'nhấn để lật lại'; tag.textContent = 'mặt sau';
-  } else {
-    bw.style.display = 'none'; hint.textContent = 'nhấn để xem nội dung'; tag.textContent = 'nhấn để lật';
+    ae.innerHTML=html;ae.style.display='';
+    he.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg> Nhấn để lật lại`;
+    ee.textContent='mặt sau';
+  }else{
+    ae.style.display='none';
+    he.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> Nhấn để xem nội dung`;
+    ee.textContent='nhấn để lật';
   }
-  const pct = Math.round(((currentIndex + 1) / total) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = `Đã xem ${currentIndex + 1}/${total} thẻ`;
+  const pct=Math.round(((curIdx+1)/total)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-label').textContent=`${curIdx+1} / ${total}`;
 }
 
-function flipCard() { flipped = !flipped; renderCard(); }
-function nextCard() { const d = getDeck(currentDeckId); flipped = false; currentIndex = (currentIndex + 1) % d.cards.length; renderCard(); }
-function prevCard() { const d = getDeck(currentDeckId); flipped = false; currentIndex = (currentIndex - 1 + d.cards.length) % d.cards.length; renderCard(); }
-function shuffleDeck() { deckOrder = getDeck(currentDeckId).cards.map((_, i) => i).sort(() => Math.random() - .5); currentIndex = 0; flipped = false; renderCard(); }
-function resetDeck() { deckOrder = getDeck(currentDeckId).cards.map((_, i) => i); currentIndex = 0; flipped = false; renderCard(); }
+function flipCard(){flipped=!flipped;renderCard();}
+function nextCard(){const d=getDeck(curId);flipped=false;curIdx=(curIdx+1)%d.cards.length;renderCard();}
+function prevCard(){const d=getDeck(curId);flipped=false;curIdx=(curIdx-1+d.cards.length)%d.cards.length;renderCard();}
+function shuffleDeck(){order=getDeck(curId).cards.map((_,i)=>i).sort(()=>Math.random()-.5);curIdx=0;flipped=false;renderCard();}
+function resetDeck(){order=getDeck(curId).cards.map((_,i)=>i);curIdx=0;flipped=false;renderCard();}
 
-function switchTab(tab) {
-  ['flashcard', 'quiz', 'upload'].forEach(t => document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none');
-  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', ['flashcard', 'quiz', 'upload'][i] === tab));
-}
-
-function switchQuizDeck(id) {
-  currentDeckId = id;
-  renderDeckBtns('deck-selector', 'switchFlashDeck');
-  renderDeckBtns('quiz-deck-selector', 'switchQuizDeck');
+function switchQuizDeck(id){
+  curId=id;
+  renderPills('flash-decks','switchFlashDeck');
+  renderPills('quiz-decks','switchQuizDeck');
   startQuiz();
 }
 
-function getCorrectAnswer(deck, card) { return deck.hasDual ? card.r : card.b; }
-
-function startQuiz() {
-  const deck = getDeck(currentDeckId);
-  quizState = { cards: [...deck.cards].sort(() => Math.random() - .5), index: 0, answered: false };
-  quizScore = { correct: 0, wrong: 0 };
+function startQuiz(){
+  const deck=getDeck(curId);
+  qState={cards:[...deck.cards].sort(()=>Math.random()-.5),idx:0,answered:false};
+  qScore={c:0,w:0};
   renderQuiz();
 }
 
-function renderQuiz() {
-  if (!quizState) return;
-  const { cards, index } = quizState;
-  if (index >= cards.length) { renderQuizResult(); return; }
-  const deck = getDeck(currentDeckId);
-  const current = cards[index];
-  const correct = getCorrectAnswer(deck, current);
-  const wrongs = deck.cards.filter(c => c.f !== current.f).sort(() => Math.random() - .5).slice(0, 3).map(c => getCorrectAnswer(deck, c));
-  const options = [...wrongs, correct].sort(() => Math.random() - .5);
-  const total = cards.length;
-  const qlabel = deck.hasDual ? 'Người giàu nghĩ gì?' : 'Nội dung là gì?';
-  document.getElementById('quiz-area').innerHTML = `
-    <div class="progress-bar"><div class="progress-fill" style="width:${Math.round((index/total)*100)}%"></div></div>
-    <div class="progress">${index + 1} / ${total} câu</div>
-    <div class="quiz-q"><div class="qlabel">${qlabel}</div><div class="qtext">${current.f}</div></div>
-    <div class="quiz-options">${options.map((o, i) => `<button class="opt-btn" id="opt-${i}" onclick="answerQuiz(${i},'${escQ(o)}','${escQ(correct)}')">${o}</button>`).join('')}</div>
-  `;
-}
-
-function escQ(s) { return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
-
-function answerQuiz(i, chosen, correct) {
-  if (quizState.answered) return;
-  quizState.answered = true;
-  if (chosen === correct) quizScore.correct++; else quizScore.wrong++;
-  document.querySelectorAll('.opt-btn').forEach((btn, idx) => {
-    btn.disabled = true;
-    if (btn.textContent === correct) btn.classList.add('correct');
-    else if (idx === i) btn.classList.add('wrong');
-  });
-  setTimeout(() => { quizState.index++; quizState.answered = false; renderQuiz(); }, 1300);
-}
-
-function renderQuizResult() {
-  const total = quizState.cards.length;
-  const pct = Math.round((quizScore.correct / total) * 100);
-  document.getElementById('quiz-area').innerHTML = `
-    <div class="result-area">
-      <div class="result-pct ${pct >= 70 ? 'good' : 'bad'}">${pct}%</div>
-      <div class="result-label">${pct >= 70 ? 'Xuất sắc! Bạn đã nắm vững nội dung.' : 'Cần ôn thêm — thử luyện flashcard rồi làm lại nhé!'}</div>
-      <div class="score-row">
-        <div class="score-card"><div class="snum" style="color:var(--teal)">${quizScore.correct}</div><div class="slbl">Đúng</div></div>
-        <div class="score-card"><div class="snum" style="color:var(--red)">${quizScore.wrong}</div><div class="slbl">Sai</div></div>
-        <div class="score-card"><div class="snum">${total}</div><div class="slbl">Tổng</div></div>
-      </div>
-      <button class="nav-btn primary" onclick="startQuiz()">Làm lại</button>
+function renderQuiz(){
+  if(!qState)return;
+  const{cards,idx}=qState;
+  if(idx>=cards.length){renderResult();return;}
+  const deck=getDeck(curId);
+  const cur=cards[idx];
+  const correct=getAns(deck,cur);
+  const wrongs=deck.cards.filter(c=>c.f!==cur.f).sort(()=>Math.random()-.5).slice(0,3).map(c=>getAns(deck,c));
+  const opts=[...wrongs,correct].sort(()=>Math.random()-.5);
+  const total=cards.length;
+  const qlbl=deck.dual?'Người giàu nghĩ gì?':'Nội dung là gì?';
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="prog-row">
+      <div class="prog-bar"><div class="prog-fill" style="width:${Math.round(idx/total*100)}%"></div></div>
+      <div class="prog-label">${idx+1} / ${total}</div>
     </div>
-  `;
+    <div class="quiz-q-card">
+      <div class="quiz-eye">${qlbl}</div>
+      <div class="quiz-q-text">${cur.f}</div>
+    </div>
+    <div class="quiz-opts">
+      ${opts.map((o,i)=>`<button class="opt" id="opt${i}" onclick="answerQuiz(${i},'${escQ(o)}','${escQ(correct)}')">${o}</button>`).join('')}
+    </div>`;
 }
 
-function addCustomDeck() {
-  const name = document.getElementById('deck-name-input').value.trim();
-  const text = document.getElementById('upload-text').value.trim();
-  if (!name) { alert('Vui lòng nhập tên bộ thẻ'); return; }
-  const lines = text.split('\n').filter(l => l.includes('|'));
-  if (!lines.length) { alert('Không tìm thấy thẻ nào. Dùng dấu | để phân tách mặt trước và mặt sau'); return; }
-  const cards = lines.map(l => { const p = l.split('|'); return { f: p[0].trim(), b: p.slice(1).join('|').trim() }; });
-  const id = 'custom_' + Date.now();
-  customDecks.push({ id, label: name, cards, custom: true });
-  allDecks = [...BUILT_IN, ...customDecks];
-  try { localStorage.setItem('memoryCustomDecks', JSON.stringify(customDecks)); } catch(e) {}
-  document.getElementById('deck-name-input').value = '';
-  document.getElementById('upload-text').value = '';
+function answerQuiz(i,chosen,correct){
+  if(qState.answered)return;
+  qState.answered=true;
+  if(chosen===correct)qScore.c++;else qScore.w++;
+  document.querySelectorAll('.opt').forEach((btn,idx)=>{
+    btn.disabled=true;
+    if(btn.textContent===correct)btn.classList.add('correct');
+    else if(idx===i)btn.classList.add('wrong');
+  });
+  setTimeout(()=>{qState.idx++;qState.answered=false;renderQuiz();},1300);
+}
+
+function renderResult(){
+  const total=qState.cards.length;
+  const pct=Math.round(qScore.c/total*100);
+  const cls=pct>=80?'good':pct>=50?'ok':'bad';
+  const msg=pct>=80?'Xuất sắc! Bạn đã nắm vững nội dung.':pct>=50?'Khá tốt! Ôn thêm một chút nữa nhé.':'Cần luyện thêm — hãy ôn flashcard rồi thử lại!';
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="result">
+      <div class="result-pct ${cls}">${pct}%</div>
+      <div class="result-msg">${msg}</div>
+      <div class="score-cards">
+        <div class="sc"><div class="n" style="color:var(--teal)">${qScore.c}</div><div class="l">Đúng</div></div>
+        <div class="sc"><div class="n" style="color:var(--accent)">${qScore.w}</div><div class="l">Sai</div></div>
+        <div class="sc"><div class="n">${total}</div><div class="l">Tổng</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()">Làm lại</button>
+    </div>`;
+}
+
+function addDeck(){
+  const name=document.getElementById('deck-name').value.trim();
+  const content=document.getElementById('deck-content').value.trim();
+  if(!name){alert('Vui lòng nhập tên bộ thẻ');return;}
+  const lines=content.split('\n').filter(l=>l.includes('|'));
+  if(!lines.length){alert('Không tìm thấy thẻ nào. Dùng dấu | để phân tách');return;}
+  const cards=lines.map(l=>{const p=l.split('|');return{f:p[0].trim(),b:p.slice(1).join('|').trim()};});
+  custom.push({id:'c_'+Date.now(),label:name,cards,custom:true});
+  try{localStorage.setItem('ghinho_decks',JSON.stringify(custom));}catch(e){}
+  document.getElementById('deck-name').value='';
+  document.getElementById('deck-content').value='';
   renderCustomList();
-  renderDeckBtns('deck-selector', 'switchFlashDeck');
-  renderDeckBtns('quiz-deck-selector', 'switchQuizDeck');
-  alert(`Đã thêm "${name}" với ${cards.length} thẻ!`);
+  renderPills('flash-decks','switchFlashDeck');
+  renderPills('quiz-decks','switchQuizDeck');
+  alert(`✓ Đã thêm "${name}" với ${cards.length} thẻ!`);
 }
 
-function deleteCustomDeck(id) {
-  if (!confirm('Xóa bộ thẻ này?')) return;
-  customDecks = customDecks.filter(d => d.id !== id);
-  allDecks = [...BUILT_IN, ...customDecks];
-  try { localStorage.setItem('memoryCustomDecks', JSON.stringify(customDecks)); } catch(e) {}
-  if (currentDeckId === id) switchFlashDeck(BUILT_IN[0].id);
+function deleteDeck(id){
+  if(!confirm('Xóa bộ thẻ này?'))return;
+  custom=custom.filter(d=>d.id!==id);
+  try{localStorage.setItem('ghinho_decks',JSON.stringify(custom));}catch(e){}
+  if(curId===id)switchFlashDeck(BUILT_IN[0].id);
   renderCustomList();
-  renderDeckBtns('deck-selector', 'switchFlashDeck');
-  renderDeckBtns('quiz-deck-selector', 'switchQuizDeck');
+  renderPills('flash-decks','switchFlashDeck');
+  renderPills('quiz-decks','switchQuizDeck');
 }
 
-function renderCustomList() {
-  const el = document.getElementById('custom-decks-list');
-  if (!customDecks.length) { el.innerHTML = ''; return; }
-  el.innerHTML = `<hr><div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:.75rem">Bộ thẻ của bạn</div>` +
-    customDecks.map(d => `<div class="custom-item">
-      <div><span>${d.label}</span> <small>(${d.cards.length} thẻ)</small></div>
-      <button class="del-btn" onclick="deleteCustomDeck('${d.id}')">Xóa</button>
+function renderCustomList(){
+  const el=document.getElementById('custom-list');
+  if(!custom.length){el.innerHTML='';return;}
+  el.innerHTML=custom.map(d=>`
+    <div class="custom-item">
+      <div><div class="ci-name">${d.label}</div><div class="ci-count">${d.cards.length} thẻ</div></div>
+      <button class="btn-del" onclick="deleteDeck('${d.id}')">Xóa</button>
     </div>`).join('');
 }
 
-// Keyboard navigation
-document.addEventListener('keydown', e => {
-  const tab = document.getElementById('tab-flashcard');
-  if (tab.style.display === 'none') return;
-  if (e.key === 'ArrowRight') nextCard();
-  else if (e.key === 'ArrowLeft') prevCard();
-  else if (e.key === ' ') { e.preventDefault(); flipCard(); }
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('tab-flash').style.display==='none')return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key===' '){e.preventDefault();flipCard();}
+  else if(e.key==='ArrowRight')nextCard();
+  else if(e.key==='ArrowLeft')prevCard();
 });
 
-allDecks = [...BUILT_IN, ...customDecks];
 switchFlashDeck(BUILT_IN[0].id);
-renderDeckBtns('quiz-deck-selector', 'switchQuizDeck');
+renderPills('quiz-decks','switchQuizDeck');
 renderCustomList();
 </script>
 </body>
